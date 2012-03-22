@@ -1,0 +1,242 @@
+<html>
+  <head>
+	<title>RoboCaptain: The Roguelike</title>
+	<link rel="stylesheet" href="static/css/robocaptain.css">
+	<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Brawler">
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	<script type="text/javascript" src="static/scripts/jquery.mousewheel.min.js"></script>
+	<script type="text/javascript" src="static/scripts/gridmangler.js"></script>
+	<script type="text/javascript" src="static/scripts/eyeofthetiler.js"></script>
+	<script type="text/javascript" src="static/scripts/tilecodes.js"></script>
+	<script type="text/javascript" src="static/scripts/gameutils.js"></script>		
+	<script type="text/javascript" src="static/scripts/gameclasses.js"></script>
+	<script type="text/javascript" src="static/scripts/gamelibrary.js"></script>
+	<script type="text/javascript" src="static/scripts/levelgen.js"></script>
+	<script type="text/javascript" src="static/scripts/fov.js"></script>
+	<script type="text/javascript" src="static/scripts/dijkstramap.js"></script>
+	<script type="text/javascript" src="static/scripts/game.js"></script>
+
+  <script type="text/javascript">
+	var game, player_name;
+
+    var toggleHowToPlayContent = function () {
+	  $('#id_div_howtoplay_content').toggle();
+    };
+	
+	$(document).ready(function ( ) {
+	  
+	  var imageFiles = [constants.tiles_image];
+	
+	  /////////////////////////////////////////////////////////
+	  // Helper function, used below.
+	  // Usage: ['img1.jpg','img2.jpg'].remove('img1.jpg');
+	  Array.prototype.remove = function(element) {
+		for (var i = 0; i < this.length; i++) {
+		  if (this[i] == element) { this.splice(i,1); }
+		}
+	  };
+	
+	  // Usage: $(['img1.jpg','img2.jpg']).preloadImages(function(){ ... });
+	  // Callback function gets called after all images are preloaded
+	  $.fn.preloadImages = function(callback) {
+		checklist = this.toArray();
+		var img;
+		this.each(function() {
+		  img = $('<img />').attr({ src: this, id: this });
+		  $('#id_div_preload').append(img);
+		  img.load(function() {
+			checklist.remove($(this).attr('src'));
+			if (checklist.length == 0) { callback(); }
+		  });
+		});
+	  };
+	  ////////////////////////////////////////////////////////////
+  
+	  $(document).keydown(
+		function (e) {
+		  game.keypress(e);
+		}
+	  );
+	  $('#id_div_open_container').hide();
+	  $('#id_div_text_message').hide();
+	  $('#id_div_info_coords').hide();
+	  $('#id_iframe_gametracker').hide();
+	  
+	  // need to allow proper right click on the game for mouse-only movement
+	  $('#id_cnv_game').bind("contextmenu",function(event) {
+		return false;
+	  });
+	  $('#id_cmd_sound').bind("click", function (event) {
+		game.toggleSound();
+	  });
+	  
+	  $('#id_cnv_game').bind("mousewheel",function(event, delta) {
+		game.handleMousewheelEvent(event, delta)
+		return true;
+	  });
+
+	  $(imageFiles).preloadImages(initGame);
+	});
+  
+	var initGame = function ( ) {
+	  resizeCanvas();
+	  var tilecodes = getTileCodes();
+	  game = robocaptain_game($, tilecodes, level_generator());
+	  game.init();
+	};
+	
+	var playerChangeName = function ( ) {
+	  var new_name = prompt("Enter Robo-Designation: ");
+	  player_name = new_name;
+	  game.playerChangeName(new_name);
+	};
+	
+	var resizeCanvas = function ( ) {
+	
+		var game_width, game_height, inv_width, inv_height, info_width, info_height;
+		
+		game_width = constants.tile_dst_width * constants.game_tiles_width;
+		game_height = constants.tile_dst_height * constants.game_tiles_height;
+		$('#id_cnv_game').attr('width', game_width);
+		$('#id_cnv_game').attr('height', game_height);
+		
+		info_width = constants.tile_dst_width * 16;
+		info_height = constants.tile_dst_height * Math.floor(constants.game_tiles_height * 0.5);
+		$('#id_cnv_playerinfo').attr('width', info_width);
+		$('#id_cnv_playerinfo').attr('height', info_height);
+
+		constants.inventory_tile_dst_width = constants.tile_dst_width * 2;
+		constants.inventory_tile_dst_height = constants.tile_dst_height * 2;
+		inv_width = constants.tile_dst_width * 16;
+		inv_height = constants.inventory_tile_dst_height;// * Math.floor(constants.game_tiles_height * 0.25);
+		$('#id_cnv_inventory').attr('width', inv_width);
+		$('#id_cnv_inventory').attr('height', inv_height);
+
+		hover_width = constants.tile_dst_width * 16;
+		hover_height = game_height - info_height - inv_height - 2;
+		$('#id_cnv_hoverinfo').attr('width', hover_width);
+		$('#id_cnv_hoverinfo').attr('height', hover_height);
+		
+		$('#id_cnv_container').attr('width', inv_width);
+		$('#id_cnv_container').attr('height', inv_height);
+		
+		$('#id_cnv_messages').attr('width', game_width + inv_width);
+		$('#id_cnv_messages').attr('height', constants.tile_dst_height * 3);
+		
+		$('#id_cnv_text_message').attr('width', game_width - constants.tile_dst_width * 2);
+		$('#id_cnv_text_message').attr('height', constants.tile_dst_height);
+		
+		$('#id_div_howtoplay_content').attr('width', game_width);
+	};
+	
+  </script>
+  <script type="text/javascript">
+
+	<!-- google analytics code here -->
+	 var _gaq = _gaq || [];
+	  _gaq.push(['_setAccount', 'UA-28047414-1']);
+	  _gaq.push(['_trackPageview']);
+
+	  (function() {
+		var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+		ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+		var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+	  })();
+  </script>
+</head>
+
+  <body>
+	<div id="id_div_container">
+	  <table>
+		<tr><td><h2 class="game_header">RoboCaptain: Doomsday</h2></td><td class="changename"><a href="javascript: playerChangeName()">change your name</a></td></tr>
+		<tr><td colspan="2">
+			<canvas id="id_cnv_messages" width="2" height="2">
+				no message for you
+			</canvas>
+		</td></tr>
+		<tr>
+		  <td>
+			<canvas id="id_cnv_game" width="2" height="2" >
+			  arg!
+			</canvas>
+		  </td>
+		  <td>
+			<table style="vertical-align: bottom;">
+			  <tr>
+				<td>
+				  <canvas id="id_cnv_playerinfo" width="240" height="160" >
+					hey
+				  </canvas>
+				</td>
+			  </tr>
+			  <tr>
+				<td>
+				  <canvas id="id_cnv_inventory" width="240" height="80" >
+					arg!
+				  </canvas>
+				</td>
+			  </tr>
+			  <tr>
+				<td>
+				  <canvas id="id_cnv_hoverinfo" width="240" height="77" >
+					arg!
+				  </canvas>
+				</td>
+			  </tr>
+			</table>
+		  </td>
+		</tr>
+	  </table>
+
+	  <div id="id_div_info_footer"></div>
+	  <div id="id_div_info_coords"></div>
+	  
+	  <div id="id_div_howtoplay">
+		[<a href="static/images/controls.png" target="_blank">Controls (New Tab)</a>]
+		[<a href="credits.html" target="_blank">Credits</a>]
+		[<a href="javascript: toggleHowToPlayContent();">Show/Hide Text</a>]
+		<button id="id_cmd_sound" value="toggle_sound">Disable Sound</button>
+		<div id="id_div_howtoplay_content">
+			
+			Thanks for checking out RoboCaptain: Doomsday! This is the <a href="http://roguebasin.roguelikedevelopment.org/index.php/7DRL_Contest_2012">2012 7DRL Challenge</a> version, 
+			completed in seven days from March 10 to March 17, 2012.
+			
+			<br/><br/>
+			
+			The game is playable entirely with the mouse, or entirely with the keyboard. You can see the full list of controls <a href="static/images/controls.png">here</a>.
+			<ul>
+				<li><b>Movement</b> <i>numpad, arrowkeys, VI keys, click (also shoots), right click (never shoots)</i></li>
+				<li><b>Shoot</b> <i>f, g to cycle, or mouse-click</i></li>
+				<li><b>Action (Pickup/Open/Read)</b> <i>SPACE, middle click, self-click</i></li>
+				<li><b>Activate Item</b> <i>a, click on inventory</i></li>
+				<li><b>Drop Item</b> <i>d, right-click on inventory</i></li>
+			</ul>
+			<br/><br/>
+			
+			You can follow my progress on this game (and others) at <a href="http://heroicfisticuffs.blogspot.com">at Heroic Fisticuffs!</a>. 
+			If you are feeling generous, please send any bug reports, comments, and/or words of encouragement to me at <img src="static/images/address.png"/> or on <a href="https://plus.google.com/117561584498629726732/">Google+</a>.
+			
+			Thanks for playing! Cheers!
+			
+		</div>
+		
+	  </div>
+	  
+	  <div id="id_div_open_container">
+		<canvas id="id_cnv_container" width="360" height="420">
+		  buzzzowie!
+		</canvas>
+	  </div>
+	  
+	  <div id="id_div_text_message">
+		<canvas id="id_cnv_text_message" width="360" height="420">
+		  txt msg here
+		</canvas>
+	  </div>
+	</div>
+  
+	<iframe id="id_iframe_gametracker" src=""></iframe>
+	<div id="id_div_preload" style="display: none">
+	</div>
+  </body>
+</html>
