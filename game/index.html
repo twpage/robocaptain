@@ -130,25 +130,13 @@
 	};
 	
   </script>
-  <script type="text/javascript">
 
-	<!-- google analytics code here -->
-	 var _gaq = _gaq || [];
-	  _gaq.push(['_setAccount', 'UA-28047414-1']);
-	  _gaq.push(['_trackPageview']);
-
-	  (function() {
-		var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-		ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-		var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-	  })();
-  </script>
 </head>
 
   <body>
 	<div id="id_div_container">
 	  <table>
-		<tr><td><h2 class="game_header">RoboCaptain: Doomsday</h2></td><td class="changename"><a href="javascript: playerChangeName()">change your name</a></td></tr>
+		<tr><td><h2 class="game_header">RoboCaptain</h2></td><td class="changename"><a href="javascript: playerChangeName()">change your name</a></td></tr>
 		<tr><td colspan="2">
 			<canvas id="id_cnv_messages" width="2" height="2">
 				no message for you
@@ -207,17 +195,36 @@
 			<ul>
 				<li><b>Movement</b> <i>numpad, arrowkeys, VI keys, click (also shoots), right click (never shoots)</i></li>
 				<li><b>Shoot</b> <i>f, g to cycle, or mouse-click</i></li>
+				<li><b>Toggle Power</b> <i>z, mousewheel</i></li>
 				<li><b>Action (Pickup/Open/Read)</b> <i>SPACE, middle click, self-click</i></li>
 				<li><b>Activate Item</b> <i>a, click on inventory</i></li>
+				<li><b>Cloak On/Off</b> <i>c, right-click on self</i></li>
 				<li><b>Drop Item</b> <i>d, right-click on inventory</i></li>
 			</ul>
 			<br/><br/>
 			
-			You can follow my progress on this game (and others) at <a href="http://heroicfisticuffs.blogspot.com">at Heroic Fisticuffs!</a>. 
-			If you are feeling generous, please send any bug reports, comments, and/or words of encouragement to me at <img src="static/images/address.png"/> or on <a href="https://plus.google.com/117561584498629726732/">Google+</a>.
+			You can follow my progress on this game (and others) at <a href="http://blog.heroicfisticuffs.com">at Heroic Fisticuffs!</a>. Thanks for playing! Cheers!
 			
-			Thanks for playing! Cheers!
-			
+		</div>
+		<br/>
+		<div id="id_div_container">
+
+				<u>Thanks to</u>
+				<ul>
+					<li>
+					Brian Walker (aka Pender) for creating the perfect roguelike and providing an amazing influence with <a href="https://sites.google.com/site/broguegame/">Brogue</a>, not to mention his ideas on <a href="http://roguebasin.roguelikedevelopment.org/index.php/The_Incredible_Power_of_Dijkstra_Maps">Dijkstra Maps</a>.
+					</li>
+					<li>
+					Ido Yehieli, for providing another great influence with <a href="http://cardinalquest.com/">Cardinal Quest</a>
+					</li>
+					<li>
+					Brandon Aaron for this <a href="http://brandonaaron.net/code/mousewheel/docs">jQuery Mousewheel plugin</a>, solving a problem I had been tearing my hair out over.
+					</li>
+					<li>This <a href="http://roguebasin.roguelikedevelopment.org/index.php/Permissive_Field_of_View_in_Javascript">awesome FOV algorithm</a> in javascript from roguebasin</li>
+					<li>All sounds were generated using <a href="http://www.bfxr.net/">BFXR</a>, which is amazing</li>
+					<li>The other members of the <a href="https://plus.google.com/101905363844824989404/">2012 7DRL Google+ Page</a></li>
+				</ul>
+		
 		</div>
 		
 	  </div>

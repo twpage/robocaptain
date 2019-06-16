@@ -66,17 +66,17 @@ canvas#id_cnv_text_message {
 	border-color: #0082FF;
 }
 
-div#id_div_howtoplay_content {
+/* div#id_div_howtoplay_content {
 	width: 60%;
 	color: #AAAAAA;
 	font-size: 75%;
-}
+} */
 
 canvas#id_cnv_messages {
 	border: none;
 }
 
-span.power# {
+span.power {
 	color: blue;
 }
 /* ============================================================================================================================
