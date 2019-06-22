@@ -54,6 +54,7 @@
   
 	  $(document).keydown(
 		function (e) {
+		  e.preventDefault();
 		  game.keypress(e);
 		}
 	  );
